@@ -322,11 +322,11 @@ export default class LinterPlugin extends Plugin {
     this.originalSaveCallback = saveCommandDefinition?.checkCallback;
 
     if (typeof this.originalSaveCallback === 'function') {
-      saveCommandDefinition.checkCallback = (checking: boolean) => {
+      saveCommandDefinition.checkCallback = async (checking: boolean) => {
         if (checking) {
-          return this.originalSaveCallback(checking);
+          return await this.originalSaveCallback(checking);
         } else {
-          this.originalSaveCallback(checking);
+          await this.originalSaveCallback(checking);
           if (this.settings.lintOnSave && this.isEnabled) {
             const editor = this.getEditor();
             if (editor) {

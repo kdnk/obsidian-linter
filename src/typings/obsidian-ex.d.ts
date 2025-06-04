@@ -5,7 +5,7 @@ export interface ObsidianCommandInterface {
   executeCommandById(id: string): void;
   commands: {
     'editor:save-file': {
-      checkCallback(checking: boolean): boolean | void;
+      checkCallback(checking: boolean): Promise<boolean | void>;
     };
   };
   listCommands(): Command[];
