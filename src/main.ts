@@ -326,7 +326,10 @@ export default class LinterPlugin extends Plugin {
         if (checking) {
           return await this.originalSaveCallback(checking);
         } else {
+
           await this.originalSaveCallback(checking);
+          const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+          await sleep(100);
           if (this.settings.lintOnSave && this.isEnabled) {
             const editor = this.getEditor();
             if (editor) {
