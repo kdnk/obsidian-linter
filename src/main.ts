@@ -1,4 +1,4 @@
-import {App, Editor, EventRef, MarkdownView, Menu, Notice, Plugin, TAbstractFile, TFile, TFolder, addIcon, htmlToMarkdown, EditorSelection, EditorChange, normalizePath, MarkdownFileInfo, debounce, Debouncer} from 'obsidian';
+import {App, Editor, EventRef, MarkdownView, Menu, Notice, Plugin, TAbstractFile, TFile, TFolder, addIcon, htmlToMarkdown, EditorSelection, EditorChange, normalizePath, MarkdownFileInfo, debounce, Debouncer, getLanguage} from 'obsidian';
 import {Options, RuleType, ruleTypeToRules, rules, sortRules} from './rules';
 import DiffMatchPatch from 'diff-match-patch';
 import dedent from 'ts-dedent';
@@ -81,7 +81,7 @@ export default class LinterPlugin extends Plugin {
   async onload() {
     sortRules();
 
-    setLanguage(window.localStorage.getItem('language'));
+    setLanguage(getLanguage());
     logInfo(getTextInLanguage('logs.plugin-load'));
 
     this.isEnabled = true;
@@ -200,7 +200,7 @@ export default class LinterPlugin extends Plugin {
           return false;
         }
 
-        this.createFolderLintModal(ctx.file.parent);
+        that.createFolderLintModal(ctx.file.parent);
       },
     });
 
@@ -229,7 +229,7 @@ export default class LinterPlugin extends Plugin {
           return false;
         }
 
-        void this.addFolderToIgnoreList(ctx.file.parent);
+        void that.addFolderToIgnoreList(ctx.file.parent);
       },
     });
 
@@ -241,7 +241,7 @@ export default class LinterPlugin extends Plugin {
           return that.isMarkdownFile(ctx.file) && !that.shouldIgnoreFile(ctx.file);
         }
 
-        void this.addFileToIgnoreList(ctx.file);
+        void that.addFileToIgnoreList(ctx.file);
       },
       icon: iconInfo.ignoreFile.id,
     });
@@ -1114,7 +1114,7 @@ export default class LinterPlugin extends Plugin {
     this.settings.settingsConvertedToConfigKeyValues = true;
     await this.saveSettings();
 
-    setLanguage(window.localStorage.getItem('language'));
+    setLanguage(getLanguage());
 
     return updateMade;
   }

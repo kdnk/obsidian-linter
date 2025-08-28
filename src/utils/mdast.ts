@@ -24,6 +24,11 @@ type PositionPlusEmptyIndicator = {
   isEmpty: boolean,
 }
 
+type PositionPlusText = {
+  position: Position,
+  text: string,
+}
+
 export enum MDAstTypes {
   Link = 'link',
   Footnote = 'footnoteDefinition',
@@ -38,6 +43,8 @@ export enum MDAstTypes {
   Blockquote = 'blockquote',
   HorizontalRule = 'thematicBreak',
   Html = 'html',
+  Heading = 'heading',
+  Text = 'text',
   // math types
   Math = 'math',
   InlineMath = 'inlineMath',
@@ -117,7 +124,7 @@ export function getPositions(type: MDAstTypes, text: string): Position[] {
  * @return {PositionPlusEmptyIndicator[]} The positions of the list item text in the given text
  * with a status as to whether or not they are empty
  */
-function getListItemTextPositions(text: string, includeEmptyNodes: boolean = false): Position[] {
+function getListItemTextPositions(text: string, includeEmptyNodes: boolean = false): PositionPlusEmptyIndicator[] {
   const ast = parseTextToAST(text);
   const positions: PositionPlusEmptyIndicator[] = [];
   visit(ast, MDAstTypes.ListItem as string, (node) => {
@@ -139,6 +146,31 @@ function getListItemTextPositions(text: string, includeEmptyNodes: boolean = fal
         positions.push({
           position: childNode.position,
           isEmpty: false,
+        });
+      }
+    }
+  });
+
+  // Sort positions by start position in reverse order
+  positions.sort((a, b) => b.position.start.offset - a.position.start.offset);
+  return positions;
+}
+
+function getHeaderTextPositions(text: string): PositionPlusText[] {
+  const ast = parseTextToAST(text);
+  const positions: PositionPlusText[] = [];
+  visit(ast, MDAstTypes.Heading as string, (node) => {
+    // @ts-ignore the fact that not all nodes have a children property since I am skipping any that do not
+    if (!node.children || node.children.length === 0) {
+      return;
+    }
+
+    // @ts-ignore the fact that not all nodes have a children property since I have already exited the function if that is the case
+    for (const childNode of node.children) {
+      if (childNode.type === (MDAstTypes.Text as string)) {
+        positions.push({
+          position: childNode.position as Position,
+          text: childNode.value as string,
         });
       }
     }
@@ -616,7 +648,9 @@ export function updateListItemText(text: string, func:(text: string) => string, 
         startIndex++;
       }
 
-      startIndex++;
+      if (startIndex < position.position.end.offset) {
+        startIndex++;
+      }
     } else {
       // get the actual start of the list item leaving only 1 whitespace between the indicator and the text
       while (startIndex > 0 && text.charAt(startIndex - 1).trim() === '') {
@@ -1163,6 +1197,33 @@ export function ensureFencedCodeBlocksHasLanguage(text: string, defaultLanguage:
       continue;
     }
     text = replaceTextBetweenStartAndEndWithNewValue(text, position.start.offset + 3, position.start.offset + 3, defaultLanguage);
+  }
+
+  return text;
+}
+
+export function updateHeaderText(text: string, func:(text: string) => string): string {
+  const positions = getHeaderTextPositions(text);
+
+  // for the best performance, we want to grab all places that need updating and then
+  // at the end we want to update the text in one go because otherwise we get a lot of
+  // instances of the file text in memory
+  const updateLocations: {startIndex: number, endIndex: number, newText: string}[] = [];
+  for (const position of positions) {
+    const updatedText = func(position.text);
+    if (updatedText !== position.text) {
+      const headerText = text.substring(position.position.start.offset, position.position.end.offset);
+      const startIndex = position.position.start.offset+ headerText.indexOf(position.text);
+      updateLocations.push({
+        startIndex: startIndex,
+        endIndex: startIndex + position.text.length,
+        newText: updatedText,
+      });
+    }
+  }
+
+  for (const headerUpdate of updateLocations) {
+    text = replaceTextBetweenStartAndEndWithNewValue(text, headerUpdate.startIndex, headerUpdate.endIndex, headerUpdate.newText);
   }
 
   return text;
