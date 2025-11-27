@@ -331,10 +331,7 @@ export default class LinterPlugin extends Plugin {
         if (checking) {
           return await this.originalSaveCallback(checking);
         } else {
-
           await this.originalSaveCallback(checking);
-          const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-          await sleep(100);
           if (this.settings.lintOnSave && this.isEnabled) {
             const editor = this.getEditor();
             if (editor) {
@@ -589,7 +586,10 @@ export default class LinterPlugin extends Plugin {
     const oldText = editor.getValue();
     let newText: string;
     try {
-      newText = this.rulesRunner.lintText(createRunLinterRulesOptions(oldText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
+      this.app.vault.process(file, (old: string) => {
+        newText = this.rulesRunner.lintText(createRunLinterRulesOptions(oldText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
+        return newText
+      })
     } catch (error) {
       this.handleLintError(file, error, getTextInLanguage('commands.lint-file.error-message') + ' \'{FILE_PATH}\'', false);
       return;
