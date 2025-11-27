@@ -162,6 +162,10 @@ export default {
         'name': 'Display message on lint',
         'description': 'Display the number of characters changed after linting',
       },
+      'suppress-message-when-no-change': {
+        'name': 'Suppress Message When No Change',
+        'description': 'If enabled, no message will be shown when no actual changes occur.',
+      },
       'lint-on-file-change': {
         'name': 'Lint on Focused File Change',
         'description': 'When a file is closed or a new file is swapped to, the previous file is linted.',
@@ -528,6 +532,10 @@ export default {
     'move-footnotes-to-the-bottom': {
       'name': 'Move Footnotes to the bottom',
       'description': 'Move all footnotes to the bottom of the document and makes sure they are sorted based on the order they are referenced in the file\'s body.',
+      'include-blank-line-between-footnotes': {
+        'name': 'Include Blank Line Between Footnotes',
+        'description': 'Includes a blank line between footnotes when enabled.',
+      },
     },
     // move-math-block-indicators-to-their-own-line.ts
     'move-math-block-indicators-to-their-own-line': {

@@ -1,5 +1,5 @@
 import {getAllTablesInText} from './mdast';
-import {makeSureContentHasEmptyLinesAddedBeforeAndAfter} from './strings';
+import {makeSureContentHasEmptyLinesAddedBeforeAndAfter, unescapeMarkdownSpecialCharacters} from './strings';
 
 // Useful regexes
 export const allHeadersRegex = /^([ \t]*)(#+)([ \t]+)([^\n\r]*?)([ \t]+#+)?$/gm;
@@ -47,7 +47,7 @@ export const checklistBoxStartsTextRegex = new RegExp(`^${checklistBoxIndicator}
 export const indentedOrBlockquoteNestedChecklistIndicatorRegex = new RegExp(`^${lineStartingWithWhitespaceOrBlockquoteTemplate}- ${checklistBoxIndicator} `);
 export const nonBlockquoteChecklistRegex = new RegExp(`^\\s*- ${checklistBoxIndicator} `);
 
-export const startsWithListMarkerRegex = new RegExp(`^\\s*(-|\\*|\\+|\\d+[.)]|- (${checklistBoxIndicator}))`, 'm');
+export const startsWithListMarkerRegex = new RegExp(`^\\s*(- |\\* |\\+ |\\d+[.)] |- (${checklistBoxIndicator}) )`, 'm');
 
 export const footnoteDefinitionIndicatorAtStartOfLine = /^(\[\^[^\]]*\]) ?([,.;!:?])/gm;
 export const calloutRegex = /^(>\s*)+\[![^\s]*\]/m;
@@ -123,7 +123,8 @@ export function getFirstHeaderOneText(text: string): string {
       return $2;
     });
 
-    return headerText.replaceAll(genericLinkRegex, '$2');
+    headerText = headerText.replaceAll(genericLinkRegex, '$2');
+    return unescapeMarkdownSpecialCharacters(headerText);
   }
 
   return '';
