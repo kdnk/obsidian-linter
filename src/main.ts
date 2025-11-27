@@ -586,10 +586,7 @@ export default class LinterPlugin extends Plugin {
     const oldText = editor.getValue();
     let newText: string;
     try {
-      this.app.vault.process(file, (old: string) => {
         newText = this.rulesRunner.lintText(createRunLinterRulesOptions(oldText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
-        return newText
-      })
     } catch (error) {
       this.handleLintError(file, error, getTextInLanguage('commands.lint-file.error-message') + ' \'{FILE_PATH}\'', false);
       return;
