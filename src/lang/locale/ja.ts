@@ -64,7 +64,6 @@ export default {
     'see-console': '詳細はコンソールを参照してください。',
     'unknown-error': 'Lint中に不明なエラーが発生しました。',
     'moment-locale-not-found': 'Moment.jsのロケールを {MOMENT_LOCALE} に切り替えようとしましたが、現在のロケールは {CURRENT_LOCALE} です。',
-    'file-change-lint-message-start': 'Lintされました',
     'custom-command-callback-warning': '統合テストのためにのみカスタムコマンドコールバックを設定してください。',
 
     // rules-runner.ts
@@ -155,10 +154,6 @@ export default {
     'default-search-bar-text': 'すべての設定から検索',
     'general': {
       // general-tab.ts
-      'lint-on-save': {
-        'name': '保存時にLint実行',
-        'description': '手動で保存したときにファイルをLintする（<code>Ctrl + S</code>が押されたときや、vimキーバインドを使用しているときに<code>:w</code>が実行されたとき）',
-      },
       'display-message': {
         'name': 'Lint時にメッセージを表示',
         'description': 'Lint後に変更された文字数を表示する',
@@ -167,24 +162,16 @@ export default {
         'name': '変更がない場合はメッセージを抑制',
         'description': '有効にすると、実際に変更がない場合はメッセージが表示されません。',
       },
-      'lint-on-file-change': {
-        'name': 'フォーカスされたファイルの変更時にLintする',
-        'description': 'ファイルが閉じられたり、新しいファイルに切り替えられたりしたときに、前のファイルがLintされます。',
-      },
-      'display-lint-on-file-change-message': {
-        'name': 'フォーカスされたファイルの変更時にLintメッセージを表示',
-        'description': '"フォーカスされたファイルの変更時にLintした"ときにメッセージを表示します',
-      },
       'folders-to-ignore': {
         'name': '無視するフォルダ',
-        'description': 'すべてのファイルをLintするときや、保存時にLintするときに無視するフォルダ。',
+        'description': 'ファイルをLintするときに無視するフォルダ。',
         'folder-search-placeholder-text': 'フォルダ名',
         'add-input-button-text': '無視するフォルダを追加',
         'delete-tooltip': '削除',
       },
       'files-to-ignore': {
         'name': '無視するファイル',
-        'description': 'すべてのファイルをLintするときや、保存時にLintするときに無視するファイル。',
+        'description': 'ファイルをLintするときに無視するファイル。',
         'file-search-placeholder-text': '無視するファイルの正規表現',
         'add-input-button-text': '無視するファイルの正規表現を追加',
         'delete-tooltip': '削除',
@@ -236,12 +223,12 @@ export default {
         'description': '設定ページの読み込み時点でのLinterの data.json の内容',
       },
       'log-collection': {
-        'name': '保存時のLint実行および現在のファイルのLint実行時に、ログを収集',
-        'description': '"保存時にLint実行"および現在のファイルのLint実行時にログを収集します。これらのログはデバッグやバグ報告の作成に役立ちます。',
+        'name': '現在のファイルのLint実行時にログを収集',
+        'description': '現在のファイルのLint実行時にログを収集します。これらのログはデバッグやバグ報告の作成に役立ちます。',
       },
       'linter-logs': {
         'name': 'Linterログ',
-        'description': '最後の"保存時にLint実行"、または、最後の"現在のファイル" に実行したLintのログ（有効な場合）',
+        'description': '最後に現在のファイルへ実行したLintのログ（有効な場合）',
       },
     },
   },

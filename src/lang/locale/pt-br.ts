@@ -65,7 +65,6 @@ export default {
     'see-console': 'Verifique o console para mais detalhes.',
     'unknown-error': 'Ocorreu um erro desconhecido durante a execução do linter.',
     'moment-locale-not-found': 'Tentando alterar a localidade do Moment.js para {MOMENT_LOCALE}, obteve-se {CURRENT_LOCALE}',
-    'file-change-lint-message-start': 'Linter executado',
     'custom-command-callback-warning': 'Por favor, defina o callback de comando personalizado apenas para testes de integração.',
 
     // rules-runner.ts
@@ -156,10 +155,6 @@ export default {
     'default-search-bar-text': 'Pesquisar em todas as configurações',
     'general': {
       // general-tab.ts
-      'lint-on-save': {
-        'name': 'Executar linter ao salvar',
-        'description': 'Executa o linter ao salvar o arquivo manualmente (quando <code>Ctrl + S</code> é pressionado ou quando <code>:w</code> é executado usando atalhos do vim)',
-      },
       'display-message': {
         'name': 'Exibir mensagem ao executar linter',
         'description': 'Exibe o número de caracteres alterados após a execução do linter',
@@ -167,14 +162,6 @@ export default {
       'suppress-message-when-no-change': {
         'name': 'Suprimir mensagem quando não houver alteração',
         'description': 'Se ativado, nenhuma mensagem será mostrada quando nenhuma alteração real ocorrer.',
-      },
-      'lint-on-file-change': {
-        'name': 'Executar linter ao alterar o arquivo focado',
-        'description': 'Quando um arquivo é fechado ou um novo arquivo é selecionado, o linter é executado no arquivo anterior.',
-      },
-      'display-lint-on-file-change-message': {
-        'name': 'Exibir mensagem de execução do linter na alteração de arquivo',
-        'description': 'Exibe uma mensagem quando <code>Executar linter ao alterar o arquivo focado</code> ocorre',
       },
       'folders-to-ignore': {
         'name': 'Pastas a ignorar',

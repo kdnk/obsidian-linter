@@ -49,7 +49,6 @@ export default {
     'see-console': 'Daha fazla detay için konsolu kontrol edin.',
     'unknown-error': 'Lintleme sırasında bilinmeyen bir hata oluştu.',
     'moment-locale-not-found': 'Moment.js yerelini {MOMENT_LOCALE} olarak değiştirmeye çalışıyor, elde edilen {CURRENT_LOCALE}',
-    'file-change-lint-message-start': 'Lintlendi',
 
     // rules-runner.ts
     'pre-rules': 'normal kurallardan önceki kurallar',
@@ -120,10 +119,6 @@ export default {
     'default-search-bar-text': 'Tüm ayarları ara',
     'general': {
       // general-tab.ts
-      'lint-on-save': {
-        'name': 'Kaydederken düzelt',
-        'description': 'Manuel kaydetme (Ctrl + S tuşuna basıldığında veya vim tuş bağlamalarını kullanırken :w komutu çalıştırıldığında) dosyayı düzeltir',
-      },
       'display-message': {
         'name': 'Düzeltme sonrası mesajı göster',
         'description': 'Düzeltme sonrası değişen karakter sayısını gösterir',
@@ -131,14 +126,6 @@ export default {
       'suppress-message-when-no-change': {
         'name': 'Değişiklik Olmadığında Mesajı Bastır',
         'description': 'Etkinleştirildiğinde, gerçek değişiklikler olmadığında mesaj gösterilmez.',
-      },
-      'lint-on-file-change': {
-        'name': 'Dosya Değişikliğinde Düzeltme',
-        'description': 'Bir dosya kapatıldığında veya yeni bir dosya açıldığında, önceki dosya düzeltilir.',
-      },
-      'display-lint-on-file-change-message': {
-        'name': 'Dosya Değişikliğinde Düzeltme Mesajını Göster',
-        'description': '<code>Dosya Değişikliğinde Düzeltme</code> olduğunda bir mesaj gösterir',
       },
       'folders-to-ignore': {
         'name': 'Yoksayılacak klasörler',

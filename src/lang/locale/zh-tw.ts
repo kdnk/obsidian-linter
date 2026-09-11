@@ -64,7 +64,6 @@ export default {
     'see-console': '詳情請見主控台。',
     'unknown-error': '格式化期間發生未知錯誤。',
     'moment-locale-not-found': '嘗試將 Moment.js 地區設定切換為 {MOMENT_LOCALE}，但得到 {CURRENT_LOCALE}',
-    'file-change-lint-message-start': '已格式化',
     'custom-command-callback-warning': '請僅為整合測試設定自訂命令回呼。',
 
     // rules-runner.ts
@@ -155,21 +154,9 @@ export default {
     'default-search-bar-text': '搜尋所有設定',
     'general': {
       // general-tab.ts
-      'lint-on-save': {
-        'name': '儲存時格式化',
-        'description': '在手動儲存檔案時格式化檔案（當按下 <code>Ctrl + S</code> 或在使用 vim 按鍵綁定時執行 <code>:w</code>）',
-      },
       'display-message': {
         'name': '格式化時顯示訊息',
         'description': '格式化後顯示變更的字元數',
-      },
-      'lint-on-file-change': {
-        'name': '焦點檔案變更時格式化',
-        'description': '當檔案關閉或切換到新檔案時，會格式化前一個檔案。',
-      },
-      'display-lint-on-file-change-message': {
-        'name': '顯示檔案變更時格式化訊息',
-        'description': '當 <code>焦點檔案變更時格式化</code> 發生時顯示訊息',
       },
       'folders-to-ignore': {
         'name': '要忽略的資料夾',

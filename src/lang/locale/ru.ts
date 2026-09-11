@@ -52,7 +52,6 @@ export default {
     'see-console': 'Более подробную информацию смотрите в консоли.',
     'unknown-error': 'Во время линтинга произошла неизвестная ошибка.',
     'moment-locale-not-found': 'Попытка переключить Moment.js на {MOMENT_LOCALE}, с {CURRENT_LOCALE}',
-    'file-change-lint-message-start': 'Линт успешен',
     'custom-command-callback-warning': 'Пожалуйста, установите кастомный (callback) для интеграционных тестов.',
 
     // rules-runner.ts
@@ -143,10 +142,6 @@ export default {
     'default-search-bar-text': 'Поиск всех настроек',
     'general': {
       // general-tab.ts
-      'lint-on-save': {
-        'name': 'Линт при сохранении',
-        'description': 'Линт файла при ручном сохранении (когда нажата <code>Ctrl + S</code> или когда <code>:w</code> выполняется при использовании VIM-режима)',
-      },
       'display-message': {
         'name': 'Показывать уведомление после линта',
         'description': 'Показывать количество символов, измененных после линта',
@@ -154,14 +149,6 @@ export default {
       'suppress-message-when-no-change': {
         'name': 'Подавить уведомление при отсутствии изменений',
         'description': 'Если включено, уведомление не будет показано, когда не происходит фактических изменений.',
-      },
-      'lint-on-file-change': {
-        'name': 'Линт при изменении файла в фокусе',
-        'description': 'Когда файл закрывается или заменяется на новый, предыдущий файл линтится.',
-      },
-      'display-lint-on-file-change-message': {
-        'name': 'Показывать сообщение при изменении файла в фокусе',
-        'description': 'Показывать сообщение при <code>Линт при изменении файла в фокусе</code>',
       },
       'folders-to-ignore': {
         'name': 'Игнорировать папки',

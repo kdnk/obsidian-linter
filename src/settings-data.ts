@@ -27,7 +27,6 @@ export interface LinterSettings {
   ruleConfigs: {
     [ruleName: string]: Options;
   };
-  lintOnSave: boolean;
   displayChanged: boolean;
   suppressMessageWhenNoChange?: boolean;
   enableDiffPreviewView: boolean;
@@ -35,8 +34,6 @@ export interface LinterSettings {
   suppressLintAllFilesInFolderConfirmationModal?: boolean;
   settingsConvertedToConfigKeyValues: boolean;
   recordLintOnSaveLogs: boolean;
-  lintOnFileChange: boolean;
-  displayLintOnFileChangeNotice: boolean;
   additionalFileExtensions: string[];
   foldersToIgnore: string[];
   filesToIgnore: FileToIgnore[];
@@ -51,15 +48,12 @@ export type LinterSettingsKeys = NestedKeyOf<LinterSettings>
 
 export const DEFAULT_SETTINGS: Partial<LinterSettings> = {
   ruleConfigs: {},
-  lintOnSave: false,
   recordLintOnSaveLogs: false,
   displayChanged: true,
   suppressMessageWhenNoChange: false,
   enableDiffPreviewView: true,
   suppressLintAllFilesConfirmationModal: false,
   suppressLintAllFilesInFolderConfirmationModal: false,
-  lintOnFileChange: false,
-  displayLintOnFileChangeNotice: false,
   settingsConvertedToConfigKeyValues: false,
   additionalFileExtensions: [],
   foldersToIgnore: [],

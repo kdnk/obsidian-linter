@@ -49,7 +49,6 @@ export default {
     'see-console': 'Weitere Informationen finden Sie in der Konsole.',
     'unknown-error': 'Beim Linten ist ein unbekannter Fehler aufgetreten.',
     'moment-locale-not-found': 'Beim Versuch, Moment.js locale auf {MOMENT_LOCALE} umzustellen, wurde {CURRENT_LOCALE} angezeigt',
-    'file-change-lint-message-start': 'Linted',
 
     // rules-runner.ts
     'pre-rules': 'Regeln vor regulären Regeln',
@@ -121,10 +120,6 @@ export default {
     'default-search-bar-text': 'Alle Einstellungen durchsuchen',
     'general': {
       // general-tab.ts
-      'lint-on-save': {
-        'name': 'Linten beim Speichern',
-        'description': 'Linten der Datei beim manuellen Speichern (wenn <code>Strg + S</code> gedrückt wird oder wenn <code>:w</code> ausgeführt wird, während vim-Tastenkombinationen verwendet werden)',
-      },
       'display-message': {
         'name': 'Meldung beim Linten anzeigen',
         'description': 'Zeigen Sie die Anzahl der Zeichen an, die sich nach dem Linten geändert haben',
@@ -132,14 +127,6 @@ export default {
       'suppress-message-when-no-change': {
         'name': 'Meldung bei keiner Änderung unterdrücken',
         'description': 'Wenn aktiviert, wird keine Meldung angezeigt, wenn keine tatsächlichen Änderungen auftreten.',
-      },
-      'lint-on-file-change': {
-        'name': 'Linten bei Dateiänderungen',
-        'description': 'Wenn eine Datei geschlossen oder zu einer neuen Datei gewechselt wird, wird die vorherige Datei gelinted.',
-      },
-      'display-lint-on-file-change-message': {
-        'name': 'Nachricht beim Linten nach einer Dateiänderung anzeigen',
-        'description': 'Zeigt eine Meldung an, wenn <code>Linten bei Dateiänderungen</code> ausgelöst wurde',
       },
       'folders-to-ignore': {
         'name': 'Ordner, die ignoriert werden sollen',

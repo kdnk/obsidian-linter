@@ -25,7 +25,7 @@ This the Linter's settings. It makes the values in the `data.json` easier to acc
 
 ## Collecting Logs in the Linter
 
-If you encounter an error or are hitting some kind of performance issue and would like to help determine what th problem is, you can collect logs when linting a single file on save or single file lint.
+If you encounter an error or are hitting some kind of performance issue and would like to help determine what the problem is, you can collect logs when linting the current file.
 
 !!! Note "Logs Present"
     The log that are kept track of are based on the value of [Log Level](#log-level).

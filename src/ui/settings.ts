@@ -167,45 +167,9 @@ export class SettingTab extends PluginSettingTab {
     const items: SettingDefinitionItem<LinterSettingsKeys>[] = [];
 
     items.push({
-      name: getTextInLanguage('tabs.general.lint-on-save.name'),
-      desc: richDescription(getTextInLanguage('tabs.general.lint-on-save.description')),
-      render: (setting) => {
-        setting.addToggle((tg) => tg
-            .setValue(settings.lintOnSave)
-            .onChange(async (value) => {
-              settings.lintOnSave = value;
-              await this.plugin.saveSettings();
-              this.refreshDomState();
-            }));
-      },
-    });
-
-    items.push({
       name: getTextInLanguage('tabs.general.display-message.name'),
       desc: richDescription(getTextInLanguage('tabs.general.display-message.description')),
-      visible: () => settings.lintOnSave,
       control: {type: 'toggle', key: 'displayChanged'},
-    });
-
-    items.push({
-      name: getTextInLanguage('tabs.general.lint-on-file-change.name'),
-      desc: richDescription(getTextInLanguage('tabs.general.lint-on-file-change.description')),
-      render: (setting) => {
-        setting.addToggle((tg) => tg
-            .setValue(settings.lintOnFileChange)
-            .onChange(async (value) => {
-              settings.lintOnFileChange = value;
-              await this.plugin.saveSettings();
-              this.refreshDomState();
-            }));
-      },
-    });
-
-    items.push({
-      name: getTextInLanguage('tabs.general.display-lint-on-file-change-message.name'),
-      desc: richDescription(getTextInLanguage('tabs.general.display-lint-on-file-change-message.description')),
-      visible: () => settings.lintOnFileChange,
-      control: {type: 'toggle', key: 'displayLintOnFileChangeNotice'},
     });
 
     items.push({

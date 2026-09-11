@@ -63,21 +63,16 @@ export default class LinterPlugin extends Plugin {
   settingsTab: SettingTab;
   private eventRefs: EventRef[] = [];
   private momentLocale: string;
-  private isEnabled: boolean = true;
   private rulesRunner = new RulesRunner();
-  private lastActiveFile: TFile;
   private overridePaste: boolean = false;
   private hasCustomCommands: boolean = false;
   private customCommandsLock = new AsyncLock();
-  private originalSaveCallback?: (checking: boolean) => boolean | void = null;
-  private saveCallback?: (checking: boolean) => boolean | void = null;
   // The amount of files you can use editor lint on at once is pretty small, so we will use an array
   private editorLintFiles: TFile[] = [];
   // the amount of files that can be linted as a file can be quite large, so we will want to use a set to make
   // search and other operations faster
   private fileLintFiles: Set<TFile> = new Set();
   private customCommandsCallback: (file: TFile) => Promise<void> = null;
-  private currentlyOpeningSidebar: boolean = false;
   private activeFileChangeDebouncer: Map<string, FileChangeUpdateInfo> = new Map();
   private defaultAutoCorrectMisspellings: Map<string, string> = new Map();
   private hasLoadedMisspellingFiles = false;
@@ -92,8 +87,6 @@ export default class LinterPlugin extends Plugin {
     setLanguage(getLanguage());
     logInfo(getTextInLanguage('logs.plugin-load'));
 
-    this.isEnabled = true;
-     
     for (const key in iconInfo) {
       const svg = iconInfo[key];
       addIcon(svg.id, svg.source);
@@ -105,7 +98,7 @@ export default class LinterPlugin extends Plugin {
     this.registerView(diffPreviewViewType, (leaf) => new DiffPreviewView(leaf));
     this.updateDiffPreviewViewStatus();
 
-    this.registerEventsAndSaveCallback();
+    this.registerEvents();
 
     this.registerEditorSuggest(new RuleAliasSuggest(this));
 
@@ -115,19 +108,9 @@ export default class LinterPlugin extends Plugin {
 
   async onunload() {
     logInfo(getTextInLanguage('logs.plugin-unload'));
-    this.isEnabled = false;
 
     for (const eventRef of this.eventRefs) {
       this.app.workspace.offref(eventRef);
-    }
-
-    const saveCommandDefinition = this.app.commands?.commands?.[
-      'editor:save-file'
-    ];
-    // A later plugin may still wrap us. Keep it installed and let our inactive
-    // callback delegate to the callback captured when this instance loaded.
-    if (saveCommandDefinition?.checkCallback === this.saveCallback && this.originalSaveCallback) {
-      saveCommandDefinition.checkCallback = this.originalSaveCallback;
     }
   }
 
@@ -318,7 +301,7 @@ export default class LinterPlugin extends Plugin {
     this.diffPreviewCommandsRegistered = false;
   }
 
-  registerEventsAndSaveCallback() {
+  registerEvents() {
     let eventRef = this.app.workspace.on('editor-paste', (clipboardEv: ClipboardEvent, editor: Editor) => {
       // do not paste if another handler has already handled pasting text as that would likely cause a
       // double pasting of the clipboard contents
@@ -333,11 +316,6 @@ export default class LinterPlugin extends Plugin {
     this.eventRefs.push(eventRef);
 
     eventRef = this.app.workspace.on('file-menu', (menu, file, source) => this.onMenuOpenCallback(menu, file, source));
-    this.registerEvent(eventRef);
-    this.eventRefs.push(eventRef);
-
-    this.lastActiveFile = this.app.workspace.getActiveFile();
-    eventRef = this.app.workspace.on('active-leaf-change', () => this.onActiveLeafChange());
     this.registerEvent(eventRef);
     this.eventRefs.push(eventRef);
 
@@ -384,43 +362,6 @@ export default class LinterPlugin extends Plugin {
       await this.makeSureSettingsFilledInAndCleanupSettings();
       await this.loadAutoCorrectFiles(true);
     });
-
-    // Source for save setting
-    // https://github.com/hipstersmoothie/obsidian-plugin-prettier/blob/main/src/main.ts
-    const saveCommandDefinition = this.app.commands?.commands?.[
-      'editor:save-file'
-    ];
-
-    const originalSaveCallback = saveCommandDefinition?.checkCallback;
-    this.originalSaveCallback = originalSaveCallback;
-
-    if (typeof originalSaveCallback === 'function') {
-      this.saveCallback = (checking: boolean) => {
-        if (checking || !this.isEnabled) {
-          return originalSaveCallback(checking);
-        } else {
-          const result = originalSaveCallback(checking);
-          if (this.settings.lintOnSave) {
-            const editor = this.getEditor();
-            if (editor) {
-              const file = this.app.workspace.getActiveFile();
-              if (!this.shouldIgnoreFile(file) && this.isMarkdownFile(file) && editor.cm) {
-                void this.runLinterEditor(editor);
-              }
-            }
-          }
-          return result;
-        }
-      };
-      saveCommandDefinition.checkCallback = this.saveCallback;
-    }
-
-    // defines the vim command for saving a file and lets the linter run on save for it
-    // accounts for https://github.com/platers/obsidian-linter/issues/19
-    const that = this;
-    window.CodeMirrorAdapter.commands.save = () => {
-      that.app.commands.executeCommandById('editor:save-file');
-    };
   }
 
   async onMetadataCacheUpdatedCallback(file: TFile) {
@@ -513,27 +454,6 @@ export default class LinterPlugin extends Plugin {
     }
   }
 
-  async onActiveLeafChange() {
-    if (!this.isEnabled || this.currentlyOpeningSidebar) {
-      return;
-    }
-
-    const currentActiveFile = this.app.workspace.getActiveFile();
-    const lastActiveFileExists = this.lastActiveFile == null ? false : await this.app.vault.adapter.exists(this.lastActiveFile.path);
-    if (!this.settings.lintOnFileChange || !lastActiveFileExists || this.lastActiveFile === currentActiveFile || !this.isMarkdownFile(this.lastActiveFile) || this.shouldIgnoreFile(this.lastActiveFile)) {
-      this.lastActiveFile = currentActiveFile;
-      return;
-    }
-
-    try {
-      await this.runLinterFile(this.lastActiveFile, true);
-    } catch (error) {
-      this.handleLintError(this.lastActiveFile, error, getTextInLanguage('commands.lint-file.error-message') + ' \'{FILE_PATH}\'', false);
-    } finally {
-      this.lastActiveFile = currentActiveFile;
-    }
-  }
-
   shouldIgnoreFile(file: TFile): boolean {
     for (const folder of this.settings.foldersToIgnore) {
       // make sure that we check that the folder name is exactly at the start of the path
@@ -561,21 +481,12 @@ export default class LinterPlugin extends Plugin {
     return file && (file.extension === 'md' || this.settings.additionalFileExtensions.includes(file.extension));
   }
 
-  async runLinterFile(file: TFile, lintingLastActiveFile: boolean = false) {
+  async runLinterFile(file: TFile) {
     const oldText = stripCr(await this.app.vault.read(file));
     const newText = this.rulesRunner.lintText(createRunLinterRulesOptions(oldText, file, this.momentLocale, this.settings, this.defaultAutoCorrectMisspellings));
 
     if (oldText != newText) {
       await this.app.vault.modify(file, newText);
-
-      if (lintingLastActiveFile) {
-        const message = getTextInLanguage('logs.file-change-lint-message-start') + ' ' + this.lastActiveFile.path;
-        if (this.settings.displayLintOnFileChangeNotice) {
-          new Notice(message);
-        }
-
-        logInfo(message);
-      }
 
       // when a change is made to the file we know that the cache will update down the road
       // so we can defer running the custom commands to the cache callback
@@ -769,6 +680,14 @@ export default class LinterPlugin extends Plugin {
     // actual settings names for the key in the json
     if (!this.settings.settingsConvertedToConfigKeyValues) {
       updateMade = await this.moveConfigValuesToKeyBasedFormat();
+    }
+
+    // Automatic Linker owns automatic formatting in this fork.
+    for (const key of ['lintOnSave', 'lintOnFileChange', 'displayLintOnFileChangeNotice']) {
+      if (key in this.settings) {
+        Reflect.deleteProperty(this.settings, key);
+        updateMade = true;
+      }
     }
 
     // move a recently moved setting to its new location
@@ -1191,8 +1110,6 @@ export default class LinterPlugin extends Plugin {
     const activeEditor = this.getEditor();
 
     await this.customCommandsLock.acquire('command', async () => {
-      this.currentlyOpeningSidebar = true;
-
       await sidebarTab.openFile(file, {active: true});
       this.rulesRunner.runCustomCommands(this.settings.lintCommands, this.app.commands);
       if (this.customCommandsCallback) {
@@ -1203,8 +1120,6 @@ export default class LinterPlugin extends Plugin {
     if (activeEditor) {
       activeEditor.focus();
     }
-
-    this.currentlyOpeningSidebar = false;
   }
 
   private async runCustomCommands(file: TFile) {

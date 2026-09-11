@@ -52,7 +52,6 @@ export default {
     'see-console': '请查看控制台以获取更多信息',
     'unknown-error': '格式化过程发生未知错误',
     'moment-locale-not-found': '尝试将 Moment.js 的默认地区语言切换到 {MOMENT_LOCALE}, 实际切换到 {CURRENT_LOCALE}',
-    'file-change-lint-message-start': '格式化已完成',
     'custom-command-callback-warning': 'Please only set the custom command callback for integration tests.', // not translated
 
     // rules-runner.ts
@@ -143,10 +142,6 @@ export default {
     'default-search-bar-text': '搜索设置项',
     'general': {
       // general-tab.ts
-      'lint-on-save': {
-        'name': '保存时格式化文件',
-        'description': '手动保存时格式化文件（当按 <code>Ctrl + S</code> 时或在 vim 模式中使用 <code>:w</code> 时）',
-      },
       'display-message': {
         'name': '格式化后显示消息',
         'description': '格式化后显示修改了多少字符',
@@ -154,14 +149,6 @@ export default {
       'suppress-message-when-no-change': {
         'name': '无修改时不显示消息',
         'description': '开启后，若无实际改动发生则不显示消息。',
-      },
-      'lint-on-file-change': {
-        'name': '文件修改时格式化',
-        'description': '当文件关闭或是切换到新文件时，格式化之前的文件',
-      },
-      'display-lint-on-file-change-message': {
-        'name': '提醒文件修改时格式化',
-        'description': '当<code>文件修改时格式化</code>触发时，弹出一条提示信息',
       },
       'folders-to-ignore': {
         'name': '忽略文件夹',

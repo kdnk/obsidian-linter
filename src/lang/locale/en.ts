@@ -67,7 +67,6 @@ export default {
     'see-console': 'See console for more details.',
     'unknown-error': 'An unknown error occurred during linting.',
     'moment-locale-not-found': 'Trying to switch Moment.js locale to {MOMENT_LOCALE}, got {CURRENT_LOCALE}',
-    'file-change-lint-message-start': 'Linted',
     'custom-command-callback-warning': 'Please only set the custom command callback for integration tests.',
 
     // rules-runner.ts
@@ -174,10 +173,6 @@ export default {
       'rules': 'Rules',
 
       // general-tab.ts
-      'lint-on-save': {
-        'name': 'Lint on save',
-        'description': 'Lint the file on manual save (when <code>Ctrl + S</code> is pressed or when <code>:w</code> is executed while using vim keybindings)',
-      },
       'display-message': {
         'name': 'Display message on lint',
         'description': 'Display the number of characters changed after linting',
@@ -190,17 +185,9 @@ export default {
         'name': 'Enable workspace diff preview',
         'description': 'Show lint preview commands in a dockable workspace view. Turn this off to close the preview view and hide preview commands.',
       },
-      'lint-on-file-change': {
-        'name': 'Lint on focused file change',
-        'description': 'When a file is closed or a new file is swapped to, the previous file is linted.',
-      },
-      'display-lint-on-file-change-message': {
-        'name': 'Display lint on file change message',
-        'description': 'Displays a message when <code>Lint on focused file change</code> occurs',
-      },
       'folders-to-ignore': {
         'name': 'Folders to ignore',
-        'description': 'Folders to ignore when linting all files or linting on save.',
+        'description': 'Folders to ignore when linting files.',
         'folder-search-placeholder-text': 'Folder name',
         'add-input-button-text': 'Add another folder to ignore',
         'delete-tooltip': 'Delete',
@@ -208,7 +195,7 @@ export default {
       },
       'files-to-ignore': {
         'name': 'Files to ignore',
-        'description': 'Files to ignore when linting all files or linting on save.',
+        'description': 'Files to ignore when linting files.',
         'file-search-placeholder-text': 'regex for file to ignore',
         'add-input-button-text': 'Add another file to ignore regex',
         'delete-tooltip': 'Delete',
@@ -264,12 +251,12 @@ export default {
         'description': 'The contents of the data.json for the Linter as of the setting page loading',
       },
       'log-collection': {
-        'name': 'Collect logs when linting on save and linting the current file',
-        'description': 'Goes ahead and collects logs when you <code>Lint on save</code> and linting the current file. These logs can be helpful for debugging and create bug reports.',
+        'name': 'Collect logs when linting the current file',
+        'description': 'Collect logs when linting the current file. These logs can be helpful for debugging and create bug reports.',
       },
       'linter-logs': {
         'name': 'Linter logs',
-        'description': 'The logs from the last <code>Lint on save</code> or the last lint current file run if enabled.',
+        'description': 'The logs from the last lint current file run if enabled.',
       },
     },
   },
