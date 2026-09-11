@@ -24,9 +24,10 @@ export default class RemoveSpaceBeforeOrAfterCharacters extends RuleBuilder<Remo
     return RemoveSpaceBeforeOrAfterCharactersOptions;
   }
   apply(text: string, options: RemoveSpaceBeforeOrAfterCharactersOptions): string {
-    const symbolsBefore = escapeRegExp(options.charactersToRemoveSpacesBefore);
-    const symbolsAfter = escapeRegExp(options.charactersToRemoveSpacesAfter);
-
+    // Whitespace in these settings is not punctuation; treating it as a symbol
+    // would also remove indentation needed by list continuations and code fences.
+    const symbolsBefore = escapeRegExp(options.charactersToRemoveSpacesBefore.replace(/\s/g, '')).replace(/-/g, '\\-');
+    const symbolsAfter = escapeRegExp(options.charactersToRemoveSpacesAfter.replace(/\s/g, '')).replace(/-/g, '\\-');
 
     if (!symbolsBefore && !symbolsAfter) {
       return text;

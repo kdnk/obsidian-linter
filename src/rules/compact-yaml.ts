@@ -2,6 +2,7 @@ import {formatYAML} from '../utils/yaml';
 import {Options, RuleType} from '../rules';
 import RuleBuilder, {BooleanOptionBuilder, ExampleBuilder, OptionBuilderBase} from './rule-builder';
 import dedent from 'ts-dedent';
+import {isScalar, parseDocument, visit} from 'yaml';
 
 class CompactYamlOptions implements Options {
   innerNewLines: boolean = false;
@@ -21,13 +22,52 @@ export default class CompactYaml extends RuleBuilder<CompactYamlOptions> {
   }
   apply(text: string, options: CompactYamlOptions): string {
     return formatYAML(text, (text) => {
-      text = text.replace(/^---\n+/, '---\n');
-      text = text.replace(/\n+---/, '\n---');
-      if (options.innerNewLines) {
-        text = text.replaceAll(/\n{2,}/g, '\n');
+      // The closing frontmatter marker is not a second YAML document. Keep the
+      // opening marker so scalar ranges refer to the original text offsets.
+      const document = parseDocument(text.slice(0, -3));
+      if (document.errors.length > 0) {
+        return text;
       }
 
-      return text;
+      const scalarRanges: [number, number][] = [];
+      const anchors = new Set<string>();
+      let hasUnresolvedAlias = false;
+      visit(document, {
+        Alias: (_key, node) => {
+          // Validate references in source order without expanding alias graphs.
+          if (!anchors.has(node.source)) {
+            hasUnresolvedAlias = true;
+            return visit.BREAK;
+          }
+        },
+        Value: (_key, node) => {
+          if (node.anchor) anchors.add(node.anchor);
+          if (isScalar(node) && node.range) {
+            scalarRanges.push([node.range[0], node.range[1]]);
+          }
+        },
+      });
+      if (hasUnresolvedAlias) {
+        return text;
+      }
+
+      return text.replace(/\n{2,}/g, (newlines: string, offset: number) => {
+        const atBoundary = offset === 3 || offset + newlines.length === text.length - 3;
+        if (!options.innerNewLines && !atBoundary) {
+          return newlines;
+        }
+
+        let compacted = '\n';
+        for (let i = 1; i < newlines.length; i++) {
+          // Scalar ranges include meaningful blank lines, including trailing
+          // newlines preserved by the keep chomping indicator (|+ and >+).
+          if (scalarRanges.some(([start, end]) => start <= offset + i && offset + i < end)) {
+            compacted += '\n';
+          }
+        }
+
+        return compacted;
+      });
     });
   }
   get exampleBuilders(): ExampleBuilder<CompactYamlOptions>[] {
