@@ -1,0 +1,3 @@
+- Releases
+    - Version this fork independently of upstream. Base release numbers on the fork's latest release rather than upstream prerelease labels.
+    - Keep `package.json`, the root package metadata in `package-lock.json`, `manifest.json`, and `versions.json` synchronized when changing versions.
