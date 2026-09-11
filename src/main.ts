@@ -70,6 +70,7 @@ export default class LinterPlugin extends Plugin {
   private hasCustomCommands: boolean = false;
   private customCommandsLock = new AsyncLock();
   private originalSaveCallback?: (checking: boolean) => boolean | void = null;
+  private saveCallback?: (checking: boolean) => boolean | void = null;
   // The amount of files you can use editor lint on at once is pretty small, so we will use an array
   private editorLintFiles: TFile[] = [];
   // the amount of files that can be linted as a file can be quite large, so we will want to use a set to make
@@ -123,7 +124,9 @@ export default class LinterPlugin extends Plugin {
     const saveCommandDefinition = this.app.commands?.commands?.[
       'editor:save-file'
     ];
-    if (saveCommandDefinition && saveCommandDefinition.checkCallback && this.originalSaveCallback) {
+    // A later plugin may still wrap us. Keep it installed and let our inactive
+    // callback delegate to the callback captured when this instance loaded.
+    if (saveCommandDefinition?.checkCallback === this.saveCallback && this.originalSaveCallback) {
       saveCommandDefinition.checkCallback = this.originalSaveCallback;
     }
   }
@@ -388,15 +391,16 @@ export default class LinterPlugin extends Plugin {
       'editor:save-file'
     ];
 
-    this.originalSaveCallback = saveCommandDefinition?.checkCallback;
+    const originalSaveCallback = saveCommandDefinition?.checkCallback;
+    this.originalSaveCallback = originalSaveCallback;
 
-    if (typeof this.originalSaveCallback === 'function') {
-      saveCommandDefinition.checkCallback = (checking: boolean) => {
-        if (checking) {
-          return this.originalSaveCallback(checking);
+    if (typeof originalSaveCallback === 'function') {
+      this.saveCallback = (checking: boolean) => {
+        if (checking || !this.isEnabled) {
+          return originalSaveCallback(checking);
         } else {
-          this.originalSaveCallback(checking);
-          if (this.settings.lintOnSave && this.isEnabled) {
+          const result = originalSaveCallback(checking);
+          if (this.settings.lintOnSave) {
             const editor = this.getEditor();
             if (editor) {
               const file = this.app.workspace.getActiveFile();
@@ -405,8 +409,10 @@ export default class LinterPlugin extends Plugin {
               }
             }
           }
+          return result;
         }
       };
+      saveCommandDefinition.checkCallback = this.saveCallback;
     }
 
     // defines the vim command for saving a file and lets the linter run on save for it
