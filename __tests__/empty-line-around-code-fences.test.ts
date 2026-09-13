@@ -5,6 +5,49 @@ import {ruleTest} from './common';
 ruleTest({
   RuleBuilderClass: EmptyLineAroundCodeFences,
   testCases: [
+    ...[
+      {
+        testName: 'Preserves spacing around a fenced unordered list item',
+        text: '- before\n- ```js\n  const a = 1;\n  ```\n- after',
+      },
+      {
+        testName: 'Preserves spacing around a fenced ordered list item',
+        text: '1. before\n2. ```js\n   const a = 1;\n   ```\n3. after',
+      },
+      {
+        testName: 'Preserves spacing around a fenced item in a tab-indented nested list',
+        text: '- parent\n\t- ```js\n\t  const a = js\n\t  ```\n\t- hello',
+      },
+      {
+        testName: 'Preserves spacing around a fenced item in a deeply nested ordered list',
+        text: '- parent\n  1. child\n     1. ~~~js\n        const a = 1;\n        ~~~\n     2. after',
+      },
+      {
+        testName: 'Preserves spacing around a fenced continuation block in a list item',
+        text: '- before\n  ```js\n  const a = 1;\n  ```\n  after\n- sibling',
+      },
+      {
+        testName: 'Preserves spacing around a fenced list item inside a blockquote',
+        text: '> - before\n> - ```js\n>   const a = 1;\n>   ```\n> - after',
+      },
+      {
+        testName: 'Preserves spacing around a fenced blockquote inside a list item',
+        text: '- parent\n  > before\n  > ```js\n  > const a = 1;\n  > ```\n  > after\n- sibling',
+      },
+      {
+        testName: 'Preserves existing blank lines around a fenced continuation block in a list item',
+        text: '- before\n  \n\n  ```js\n  const a = 1;\n  ```\n  \n\n  after\n- sibling',
+      },
+      {
+        testName: 'Preserves existing blank lines around a fenced list item',
+        text: '- before\n\n\n- ```js\n  const a = 1;\n  ```\n\n\n- after',
+      },
+    ].map(({testName, text}) => ({testName, before: text, after: text})),
+    {
+      testName: 'Adds blank lines around fences outside lists while preserving a list fence in the same document',
+      before: 'Before\n```js\nconst a = 1;\n```\nAfter\n\n- ```js\n  const b = 2;\n  ```\n- sibling\n\nBefore\n~~~js\nconst c = 3;\n~~~\nAfter',
+      after: 'Before\n\n```js\nconst a = 1;\n```\n\nAfter\n\n- ```js\n  const b = 2;\n  ```\n- sibling\n\nBefore\n\n~~~js\nconst c = 3;\n~~~\n\nAfter',
+    },
     {
       testName: 'Make sure multiple blank lines at the start and end are removed',
       before: dedent`

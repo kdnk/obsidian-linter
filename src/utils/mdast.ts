@@ -1,4 +1,4 @@
-import {visit} from 'unist-util-visit';
+import {SKIP, visit} from 'unist-util-visit';
 import type {Position} from 'unist';
 import type {Root} from 'mdast';
 import {hashString53Bit, makeSureContentHasEmptyLinesAddedBeforeAndAfter, replaceTextBetweenStartAndEndWithNewValue, getStartOfLineIndex, replaceAt, getStartOfLineWhitespaceOrBlockquoteLevel} from './strings';
@@ -698,7 +698,18 @@ export function updateListItemText(text: string, func:(text: string) => string, 
 }
 
 export function ensureEmptyLinesAroundFencedCodeBlocks(text: string): string {
-  const positions: Position[] = getPositions(MDAstTypes.Code, text);
+  const positions: Position[] = [];
+  visit(parseTextToAST(text), (node) => {
+    // Preserve spacing anywhere inside a list item, including nested containers.
+    if (node.type === MDAstTypes.ListItem) {
+      return SKIP;
+    }
+
+    if (node.type === MDAstTypes.Code) {
+      positions.push(node.position);
+    }
+  });
+  positions.sort((a, b) => b.start.offset - a.start.offset);
 
   for (const position of positions) {
     const codeBlock = text.substring(position.start.offset, position.end.offset);
