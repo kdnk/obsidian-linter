@@ -28,17 +28,8 @@ export default class RemoveEmptyLinesBetweenListMarkersAndChecklists extends Rul
     const orderedMarkerRegexText = '(( |\\t)*\\d+\\.( |\\t)+.+)';
     text = this.replaceEmptyLinesBetweenList(text, orderedMarkerRegexText);
 
-    // account for '+' list marker
-    const plusMarkerRegexText = '(( |\\t)*\\+( |\\t)+.+)';
-    text = this.replaceEmptyLinesBetweenList(text, plusMarkerRegexText);
-
-    // account for '-' list marker
-    const dashMarkerRegexText = `(( |\\t)*-(?! ${checklistBoxIndicator})( |\\t)+.+)`;
-    text = this.replaceEmptyLinesBetweenList(text, dashMarkerRegexText);
-
-    // account for '*' list marker
-    const splatMarkerRegexText = '(( |\\t)*\\*( |\\t)+.+)';
-    return this.replaceEmptyLinesBetweenList(text, splatMarkerRegexText);
+    const unorderedMarkerRegexText = `(( |\\t)*(?:-(?! ${checklistBoxIndicator})|\\+|\\*)( |\\t)+.+)`;
+    return this.replaceEmptyLinesBetweenList(text, unorderedMarkerRegexText);
   }
   replaceEmptyLinesBetweenList = function(text: string, listIndicatorRegexText: string): string {
     const listRegex = new RegExp(`^${listIndicatorRegexText}\n(?:(?:[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+)?\n){1,}${listIndicatorRegexText}$`, 'gm');
@@ -127,7 +118,7 @@ export default class RemoveEmptyLinesBetweenListMarkersAndChecklists extends Rul
         `,
       }),
       new ExampleBuilder({
-        description: 'Blanks lines are removed between like list types (ordered, specific list item markers, and checklists) while blanks are left between different kinds of list item markers',
+        description: 'Blank lines are removed between unordered list items even when their markers differ, while ordered lists and checklists remain separate',
         before: dedent`
           1. Item 1
           ${''}
@@ -172,7 +163,6 @@ export default class RemoveEmptyLinesBetweenListMarkersAndChecklists extends Rul
           + Item 1
           \t+ Subitem 1
           + Item 2
-          ${''}
           * Item 1
           \t* Subitem 1
           * Item 2
