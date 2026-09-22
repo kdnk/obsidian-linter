@@ -87,5 +87,20 @@ ruleTest({
         ${'  '}- \`List<E>\` ...
       `,
     },
+    {
+      testName: 'Remove empty lines between unordered list items with different markers',
+      before: dedent`
+        - First item
+        ${''}
+        * Second item
+        ${''}
+        + Third item
+      `,
+      after: dedent`
+        - First item
+        * Second item
+        + Third item
+      `,
+    },
   ],
 });
