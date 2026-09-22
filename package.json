@@ -16,7 +16,7 @@
     "minify-css": "postcss src/styles.css -o styles.css"
   },
   "keywords": [],
-  "author": "",
+  "author": "Kodai Nakamura",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.24.0",

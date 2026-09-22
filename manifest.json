@@ -4,8 +4,8 @@
   "version": "2.0.1",
   "minAppVersion": "1.12.0",
   "description": "Formats and styles your notes. It can be used to format YAML tags, aliases, arrays, and metadata; footnotes; headings; spacing; math blocks; regular markdown contents like list, italics, and bold styles; and more with the use of custom rule options as well.",
-  "author": "Victor Tao",
-  "authorUrl": "https://github.com/platers",
+  "author": "Kodai Nakamura",
+  "authorUrl": "https://github.com/kdnk",
   "helpUrl": "https://platers.github.io/obsidian-linter/",
   "isDesktopOnly": false
 }
