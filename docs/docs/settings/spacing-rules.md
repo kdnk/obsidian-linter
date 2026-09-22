@@ -1213,7 +1213,7 @@ After:
 * Item 2
 ``````
 </details>
-<details><summary>Blank lines are removed between unordered list items even when their markers differ, while ordered lists and checklists remain separate</summary>
+<details><summary>Blank lines are removed between unordered list items and checklists, while ordered lists remain separate</summary>
 
 Before:
 
@@ -1256,11 +1256,9 @@ After:
 - Item 1
 	- Subitem 1
 - Item 2
-
 - [x] Item 1
 	- [f] Subitem 1
 - [ ] Item 2
-
 + Item 1
 	+ Subitem 1
 + Item 2

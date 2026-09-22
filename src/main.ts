@@ -50,6 +50,7 @@ const langToMomentLocale = {
 
 const userClickTimeout = 0;
 const previewLintFileCommandId = 'preview-lint-file';
+const previousPluginId = 'obsidian-linter';
 
 type FileChangeUpdateInfo = {
   debounceFn: Debouncer<[TFile, Editor], Promise<void>>,
@@ -115,7 +116,7 @@ export default class LinterPlugin extends Plugin {
   }
 
   async loadSettings() {
-    const data = await this.loadData();
+    const data = await this.loadData() ?? await this.loadSettingsFromPreviousPluginId();
     this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
     if (typeof this.settings.suppressMessageWhenNoChange !== 'boolean') {
       this.settings.suppressMessageWhenNoChange = false;
@@ -132,6 +133,23 @@ export default class LinterPlugin extends Plugin {
 
     this.updatePasteOverrideStatus();
     this.updateHasCustomCommandStatus();
+  }
+
+  private async loadSettingsFromPreviousPluginId(): Promise<object | null> {
+    const legacySettingsPath = normalizePath(`${this.app.vault.configDir}/plugins/${previousPluginId}/data.json`);
+
+    try {
+      if (!(await this.app.vault.adapter.exists(legacySettingsPath))) return null;
+
+      const settings: unknown = JSON.parse(await this.app.vault.adapter.read(legacySettingsPath));
+      if (settings === null || Array.isArray(settings) || typeof settings !== 'object') return null;
+
+      await this.saveData(settings);
+      return settings;
+    } catch (error) {
+      logWarn(`Unable to migrate settings from ${previousPluginId}: ${String(error)}`);
+      return null;
+    }
   }
 
   updateDiffPreviewViewStatus() {

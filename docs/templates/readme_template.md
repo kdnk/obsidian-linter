@@ -24,7 +24,7 @@ As of version [0.9.7 of Obsidian](https://forum.obsidian.md/t/obsidian-release-v
 ### Manual installation
 
 1. Download the [latest release](https://github.com/platers/obsidian-linter/releases/latest)
-1. Extract the obsidian-linter folder from the zip to your vault's plugins folder: `<vault>/.obsidian/plugins/`  
+1. Extract the obsidian-linter-plus folder from the zip to your vault's plugins folder: `<vault>/.obsidian/plugins/`<br>
 Note: On some machines the `.obsidian` folder may be hidden. On MacOS you should be able to press `Command+Shift+Dot` to show the folder in Finder.
 1. Reload Obsidian
 1. If prompted about Safe Mode, you can disable safe mode and enable the plugin.

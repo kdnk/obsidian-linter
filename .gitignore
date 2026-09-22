@@ -23,9 +23,9 @@ test-vault/.obsidian/*.json
 !test-vault/.obsidian/community-plugins.json
 # plugins
 !test-vault/.obsidian/plugins/hot-reload/*
-test-vault/.obsidian/plugins/obsidian-linter/*
-!test-vault/.obsidian/plugins/obsidian-linter/.hotreload
-!test-vault/.obsidian/plugins/obsidian-linter/data.json
+test-vault/.obsidian/plugins/obsidian-linter-plus/*
+!test-vault/.obsidian/plugins/obsidian-linter-plus/.hotreload
+!test-vault/.obsidian/plugins/obsidian-linter-plus/data.json
 test-vault/.obsidian/plugins/table-editor-obsidian/*
 !test-vault/.obsidian/plugins/table-editor-obsidian/.gitkeep
 

@@ -97,7 +97,7 @@ const esbuildArgs = [
 ];
 
 if (!prod) {
-  esbuildArgs.push(createEsbuildArgs(banner, '__integration__/main.test.ts', 'test-vault/.obsidian/plugins/obsidian-linter/main.js', []));
+  esbuildArgs.push(createEsbuildArgs(banner, '__integration__/main.test.ts', 'test-vault/.obsidian/plugins/obsidian-linter-plus/main.js', []));
 }
 
 for (let i = 0; i < esbuildArgs.length; i++) {
