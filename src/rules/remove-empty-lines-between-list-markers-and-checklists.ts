@@ -20,15 +20,11 @@ export default class RemoveEmptyLinesBetweenListMarkersAndChecklists extends Rul
     return RemoveEmptyLinesBetweenListMarkersAndChecklistsOptions;
   }
   apply(text: string, options: RemoveEmptyLinesBetweenListMarkersAndChecklistsOptions): string {
-    // account for '- [.]' where the period is any character except a line break character
-    const checkBoxMarkerRegexText = `(( |\\t)*- ${checklistBoxIndicator}( |\\t)+.+)`;
-    text = this.replaceEmptyLinesBetweenList(text, checkBoxMarkerRegexText);
-
     // account for ordered list marker
     const orderedMarkerRegexText = '(( |\\t)*\\d+\\.( |\\t)+.+)';
     text = this.replaceEmptyLinesBetweenList(text, orderedMarkerRegexText);
 
-    const unorderedMarkerRegexText = `(( |\\t)*(?:-(?! ${checklistBoxIndicator})|\\+|\\*)( |\\t)+.+)`;
+    const unorderedMarkerRegexText = `(( |\\t)*(?:- ${checklistBoxIndicator}|-(?! ${checklistBoxIndicator})|\\+|\\*)( |\\t)+.+)`;
     return this.replaceEmptyLinesBetweenList(text, unorderedMarkerRegexText);
   }
   replaceEmptyLinesBetweenList = function(text: string, listIndicatorRegexText: string): string {
@@ -118,7 +114,7 @@ export default class RemoveEmptyLinesBetweenListMarkersAndChecklists extends Rul
         `,
       }),
       new ExampleBuilder({
-        description: 'Blank lines are removed between unordered list items even when their markers differ, while ordered lists and checklists remain separate',
+        description: 'Blank lines are removed between unordered list items and checklists, while ordered lists remain separate',
         before: dedent`
           1. Item 1
           ${''}
@@ -155,11 +151,9 @@ export default class RemoveEmptyLinesBetweenListMarkersAndChecklists extends Rul
           - Item 1
           \t- Subitem 1
           - Item 2
-          ${''}
           - [x] Item 1
           \t- [f] Subitem 1
           - [ ] Item 2
-          ${''}
           + Item 1
           \t+ Subitem 1
           + Item 2
