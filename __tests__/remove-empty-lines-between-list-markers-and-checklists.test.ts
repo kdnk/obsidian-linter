@@ -102,5 +102,20 @@ ruleTest({
         + Third item
       `,
     },
+    {
+      testName: 'Remove empty lines between checklist items and unordered list items',
+      before: dedent`
+        - [ ] First item
+        ${''}
+        \t- Nested item
+        ${''}
+        - Second item
+      `,
+      after: dedent`
+        - [ ] First item
+        \t- Nested item
+        - Second item
+      `,
+    },
   ],
 });
